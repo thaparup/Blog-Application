@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import bcrypt from "bcrypt";
 
 export interface IUser extends Document {
   username: string;
@@ -14,6 +15,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
     },
     email: {
       type: String,
@@ -26,8 +28,6 @@ const userSchema = new Schema<IUser>(
     },
     profilePicture: {
       type: String,
-      default:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
     },
     isAdmin: {
       type: Boolean,
@@ -36,5 +36,19 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async function (next) {
+  // Only hash the password if it's new or if it has been modified
+  if (this.isModified("password") || this.isNew) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    } catch (error) {
+      console.log(error);
+      next();
+    }
+  }
+  next();
+});
 
 export const User = mongoose.model<IUser>("User", userSchema);
