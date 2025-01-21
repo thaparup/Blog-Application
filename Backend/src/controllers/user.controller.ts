@@ -4,12 +4,12 @@ import { User } from "../models/user.model";
 import { ApiError } from "../utils/Apierror";
 import { uploadOnCloudinary } from "../utils/cloudinary";
 import { DEFAULT_PROFILE_IMAGE } from "../constants";
-import { registerUserZodSchema } from "../zod_schema/user.zodschema";
+import { RegisterUserZodSchema } from "../zod_schema/user.zodschema";
 import { ApiResponse } from "../utils/ApiResponse";
 
 const registerUser = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
-    const { username, email, password, profilePicture } = req.body;
+    const { username, email, password } = req.body;
     req.body.profilePicture = DEFAULT_PROFILE_IMAGE;
     console.log(username, email, password);
 
@@ -28,11 +28,10 @@ const registerUser = asyncHandler(
 
         req.body.profilePicture = profileImageUrl.secure_url;
       } catch (error) {
-        console.log(error);
         throw new Error("Error while uploading image to Cloudinary");
       }
     }
-    const parseRequestBody = registerUserZodSchema.safeParse(req.body);
+    const parseRequestBody = RegisterUserZodSchema.safeParse(req.body);
 
     if (!parseRequestBody.success) {
       return res.status(400).json({
