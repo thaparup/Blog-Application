@@ -8,14 +8,22 @@ const RegisterUserZodSchema = z.object({
     .nonempty({ message: "Username is required" }),
   email: z
     .string()
-    .email({ message: "Invalid email address" })
-    .nonempty({ message: "Email is required" }),
+    .nonempty({ message: "Email is required" })
+    .email({ message: "Invalid email address" }),
 
   profilePicture: z.string().optional(),
-  password: z
-    .string({ message: "Password is required" })
-    .nonempty({ message: "Password is required" }),
+  password: z.string().nonempty({ message: "Password is required" }),
+});
+
+const SigninUserZodSchema = z.object({
+  password: z.string().nonempty({ message: "Password is required" }),
 });
 
 type TypeRegisterUserZodSchema = z.infer<typeof RegisterUserZodSchema>;
-export { type TypeRegisterUserZodSchema, RegisterUserZodSchema };
+type TypeSigninUserZodSchema = z.infer<typeof SigninUserZodSchema>;
+export {
+  type TypeRegisterUserZodSchema,
+  type TypeSigninUserZodSchema,
+  RegisterUserZodSchema,
+  SigninUserZodSchema,
+};

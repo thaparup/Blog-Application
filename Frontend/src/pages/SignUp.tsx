@@ -8,7 +8,6 @@ import { useMutation } from "react-query";
 import { PostQuery } from "../utils/ApiCall";
 import { REGISTER } from "../utils/ApiRoutes";
 const SignUp = () => {
-    const [errorMessage, setErrorMessage] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const {
@@ -52,7 +51,7 @@ const SignUp = () => {
                         Blog
                     </Link>
                     <p className='text-sm mt-5'>
-                        This is a demo project. You can sign up with your email and password
+                        Welcome to the Tech Blog. You can sign up with your email and password
                         or with Google.
                     </p>
                 </div>
@@ -122,11 +121,7 @@ const SignUp = () => {
                             Sign In
                         </Link>
                     </div>
-                    {errorMessage && (
-                        <Alert className='mt-5' color='failure'>
-                            {errorMessage}
-                        </Alert>
-                    )}
+
                 </div>
             </div>
         </div>
