@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { signIn } from "../controllers/auth.controller";
+import { googleSignin, signIn } from "../controllers/auth.controller";
 
 const router = Router();
 
 router.route("/signin").post(signIn);
+router.route("/google/signin").post(googleSignin);
 
 export { router };

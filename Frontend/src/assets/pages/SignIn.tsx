@@ -5,18 +5,18 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import {
     SigninUserZodSchema,
     TypeSigninUserZodSchema,
-} from "../zod_schema/user.schema";
+} from "../../zod_schema/user.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "react-query";
-import { PostQuery } from "../utils/ApiCall";
-import { SIGNIN } from "../utils/ApiRoutes";
-import { userStore } from "../store/userStore";
+import { PostQuery } from "../../utils/ApiCall";
+import { SIGNIN } from "../../utils/ApiRoutes";
+import { useUserStore } from "../../store/useUserStore";
+import OAuth from "../../components/OAuth";
 
 export default function SignIn() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { user, setUser } = userStore();
-
+    const { setUser, setAccessToken } = useUserStore();
     const {
         register,
         handleSubmit,
@@ -33,9 +33,12 @@ export default function SignIn() {
                 await PostQuery<TypeSigninUserZodSchema>(SIGNIN, val)
                     .then((res) => {
                         setLoading(false);
+                        localStorage.setItem('user', JSON.stringify(res.data.user))
+                        localStorage.setItem('token', JSON.stringify(res.data.at))
 
-                        setUser(res);
-                        console.log(res);
+                        setAccessToken(res.data.at)
+                        setUser(res.data.user);
+                        console.log(res)
                         reset({ email: "", password: "" });
                         navigate("/dashboard");
                     })
@@ -119,6 +122,7 @@ export default function SignIn() {
                             )}
                         </Button>
                     </form>
+                    <OAuth />
                     <div className="flex gap-2 text-sm mt-5">
                         <span>Dont Have an account?</span>
                         <Link to="/sign-up" className="text-blue-500">

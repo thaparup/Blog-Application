@@ -11,7 +11,6 @@ const registerUser = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { username, email, password } = req.body;
     req.body.profilePicture = DEFAULT_PROFILE_IMAGE;
-    console.log(username, email, password);
 
     const existedUser = await User.findOne({
       $or: [{ username }, { email }],

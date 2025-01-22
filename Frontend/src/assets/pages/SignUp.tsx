@@ -2,13 +2,15 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react"
 import React, { MouseEventHandler, useState } from "react";
 import { data, Link } from "react-router-dom"
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { TypeRegisterUserZodSchema, RegisterUserZodSchema } from "../zod_schema/user.schema";
+import { TypeRegisterUserZodSchema, RegisterUserZodSchema } from "../../zod_schema/user.schema";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from "react-query";
-import { PostQuery } from "../utils/ApiCall";
-import { REGISTER } from "../utils/ApiRoutes";
+import { PostQuery } from "../../utils/ApiCall";
+import { REGISTER } from "../../utils/ApiRoutes";
+import OAuth from "../../components/OAuth";
 const SignUp = () => {
     const [loading, setLoading] = useState(false);
+
 
     const {
         register,
@@ -41,7 +43,7 @@ const SignUp = () => {
     }
     return (
         <div className=''>
-            <div className='flex p-3 mt-40 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
+            <div className='flex p-3 my-36 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5'>
                 {/* left */}
                 <div className='flex-1'>
                     <Link to='/' className='font-bold dark:text-white text-4xl'>
@@ -104,6 +106,7 @@ const SignUp = () => {
                             gradientDuoTone='purpleToPink'
                             type='submit'
                             disabled={loading}
+
                         >
                             {loading ? (
                                 <>
@@ -115,6 +118,7 @@ const SignUp = () => {
                             )}
                         </Button>
                     </form>
+                    <OAuth />
                     <div className='flex gap-2 text-sm mt-5'>
                         <span>Have an account?</span>
                         <Link to='/sign-in' className='text-blue-500'>
