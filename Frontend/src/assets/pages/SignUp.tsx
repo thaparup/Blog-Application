@@ -22,6 +22,7 @@ const SignUp = () => {
     const registerUserMutation = useMutation({
         mutationFn: async (val: TypeRegisterUserZodSchema) => {
             try {
+                console.log(val)
                 setLoading(true)
                 PostQuery<TypeRegisterUserZodSchema, TypeRegisterUserZodSchema>(REGISTER, val).then((res) => {
                     console.log(res)

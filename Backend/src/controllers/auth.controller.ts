@@ -82,7 +82,7 @@ const googleSignin = asyncHandler(
           { id: user._id, isAdmin: user.isAdmin },
           process.env.ACCESS_TOKEN_SECRET!,
           {
-            expiresIn: 60 * 3,
+            expiresIn: accessTokenExpiry,
           }
         );
         const userObj = user?.toObject();
