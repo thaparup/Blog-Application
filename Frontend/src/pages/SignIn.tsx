@@ -5,13 +5,13 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import {
     SigninUserZodSchema,
     TypeSigninUserZodSchema,
-} from "../../zod_schema/user.schema";
+} from "../zod_schema/user.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "react-query";
-import { PostQuery } from "../../utils/ApiCall";
-import { SIGNIN } from "../../utils/ApiRoutes";
-import { useUserStore } from "../../store/useUserStore";
-import OAuth from "../../components/OAuth";
+import { PostQuery } from "../utils/ApiCall";
+import { SIGNIN } from "../utils/ApiRoutes";
+import { useUserStore } from "../store/useUserStore";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
     const [loading, setLoading] = useState(false);

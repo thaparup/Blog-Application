@@ -2,12 +2,12 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react"
 import React, { MouseEventHandler, useState } from "react";
 import { data, Link } from "react-router-dom"
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { TypeRegisterUserZodSchema, RegisterUserZodSchema } from "../../zod_schema/user.schema";
+import { TypeRegisterUserZodSchema, RegisterUserZodSchema } from "../zod_schema/user.schema";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from "react-query";
-import { PostQuery } from "../../utils/ApiCall";
-import { REGISTER } from "../../utils/ApiRoutes";
-import OAuth from "../../components/OAuth";
+import { PostQuery } from "../utils/ApiCall";
+import { REGISTER } from "../utils/ApiRoutes";
+import OAuth from "../components/OAuth";
 const SignUp = () => {
     const [loading, setLoading] = useState(false);
 

@@ -37,6 +37,7 @@ const signIn = asyncHandler(
           _id: existedUser._id,
           email: existedUser.email,
           username: existedUser.username,
+          isAdmin: existedUser.isAdmin,
         },
         process.env.ACCESS_TOKEN_SECRET!,
         {
@@ -54,6 +55,7 @@ const signIn = asyncHandler(
       username: existedUser.username,
       email: existedUser.email,
       profilePicture: existedUser.profilePicture,
+      isAdmin: existedUser.isAdmin,
     };
     return res
       .status(200)

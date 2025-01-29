@@ -14,7 +14,7 @@ import { DELETE_USER, LOGOUT, UPDATE_USER_PROFILE } from "../utils/ApiRoutes";
 import { z } from "zod";
 import { BsFillArrowDownRightSquareFill } from "react-icons/bs";
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export default function DashProfile() {
     const nav = useNavigate()
     const { user, setUser, clearUserAndAccessToken, isTokenExpired, accessToken } = useUserStore();
@@ -173,6 +173,17 @@ export default function DashProfile() {
                         "Update"
                     )}
                 </Button>
+                {user?.isAdmin && (
+                    <Link to={'/create-post'}>
+                        <Button
+                            type='button'
+                            gradientDuoTone='purpleToPink'
+                            className='w-full'
+                        >
+                            Create a post
+                        </Button>
+                    </Link>
+                )}
             </form>
             <div className="text-red-500 flex justify-between mt-5">
                 <span className="cursor-pointer" onClick={() => setShowModal(true)}> Delete Account</span>

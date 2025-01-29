@@ -12,11 +12,15 @@ app.use(cookieParser());
 
 import { router as userRouter } from "./routes/user.routes";
 import { router as authRouter } from "./routes/auth.routes";
+import { router as postRouter } from "./routes/post.routes";
 
 // user
 app.use("/api/v1/user", userRouter);
 
 //auth
 app.use("/api/v1/auth", authRouter);
+
+//post
+app.use("/api/v1/post", postRouter);
 
 export { app };
