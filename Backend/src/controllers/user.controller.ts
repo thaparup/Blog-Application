@@ -121,6 +121,45 @@ const updateUser = asyncHandler(
   }
 );
 
+const logoutUser = asyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .json(new ApiResponse(200, "User logged Out", {}));
+  }
+);
+
+const deleteUser = asyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    if (req.user?.id !== req.params.userId) {
+      throw new Error("You are not allowed to delete this user");
+    }
+    try {
+      await User.findByIdAndDelete(req.params.userId);
+      res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(
+          new ApiResponse(200, "User has been deleted and logged out!", {})
+        );
+    } catch (error) {
+      throw new ApiError(500, "Something went wrong ");
+    }
+  }
+);
+
 const tryUser = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { username } = req.body;
@@ -133,4 +172,4 @@ const demo = asyncHandler(async (req: Request, res: Response): Promise<any> => {
   return res.status(200).json(new ApiResponse(200, "User logged Out", {}));
 });
 
-export { demo, registerUser, updateUser, tryUser };
+export { demo, registerUser, updateUser, tryUser, deleteUser, logoutUser };

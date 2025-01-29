@@ -12,8 +12,8 @@ type UserState = {
   setUser: (user: UserState["user"]) => void;
 
   accessToken: string | null;
-  isTokenExpired: () => boolean;
-  clearUser: () => void;
+  isTokenExpired: (at: string) => boolean;
+  clearUserAndAccessToken: () => void;
   setAccessToken: (token: string) => void;
 };
 
@@ -24,13 +24,13 @@ export const useUserStore = create<UserState>((set, get) => ({
     const at = token;
     set({ accessToken: at });
   },
-  clearUser: () => set({ user: null, accessToken: null }),
+  clearUserAndAccessToken: () => set({ user: null, accessToken: null }),
   setUser: (userInput: UserState["user"]) => {
     const authorizedUser = userInput;
     set({ user: authorizedUser });
   },
-  isTokenExpired: () => {
-    const token = get().accessToken;
+  isTokenExpired: (at: string) => {
+    const token = at;
 
     let decoded;
     try {

@@ -3,9 +3,9 @@ import { useUserStore } from "../store/useUserStore"
 
 
 const PrivateRoute = () => {
-    const { isTokenExpired } = useUserStore()
+    const { isTokenExpired, accessToken } = useUserStore()
     return (
-        isTokenExpired() ? <Navigate to="/sign-in" /> : <Outlet />
+        isTokenExpired(accessToken!) ? <Navigate to="/sign-in" /> : <Outlet />
     )
 }
 

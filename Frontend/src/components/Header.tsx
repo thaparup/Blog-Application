@@ -42,7 +42,7 @@ export default function Header() {
                 <Button className='w-12 h-10 hidden sm:inline' color='gray' pill onClick={toggleTheme}>
                     {theme === 'light' ? <FaSun /> : <FaMoon />}
                 </Button>
-                {!isTokenExpired() ? (
+                {!isTokenExpired(accessToken!) ? (
                     <Dropdown
                         arrowIcon={false}
                         inline

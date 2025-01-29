@@ -1,4 +1,4 @@
-import { Alert, Button, Spinner, TextInput } from "flowbite-react";
+import { Alert, Button, Spinner, TextInput, Modal, ModalBody } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useUserStore } from "../store/useUserStore";
 import {
@@ -9,19 +9,49 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "react-query";
-import { PatchQuery, PostQuery } from "../utils/ApiCall";
-import { UPDATE_USER_PROFILE } from "../utils/ApiRoutes";
+import { DeleteQuery, PatchQuery, PostQuery } from "../utils/ApiCall";
+import { DELETE_USER, LOGOUT, UPDATE_USER_PROFILE } from "../utils/ApiRoutes";
 import { z } from "zod";
 import { BsFillArrowDownRightSquareFill } from "react-icons/bs";
-
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import { useNavigate } from "react-router-dom";
 export default function DashProfile() {
-
-    const { user, setUser } = useUserStore();
-
+    const nav = useNavigate()
+    const { user, setUser, clearUserAndAccessToken, isTokenExpired, accessToken } = useUserStore();
+    const [showModal, setShowModal] = useState(false);
     const [imageFileUrl, setImageFileUrl] = useState<string | null>(null);
 
     const [loading, setLoading] = useState(false);
+    const handleDeleteUser = async () => {
+        setShowModal(false);
+        DeleteQuery(DELETE_USER + `${user?._id}`)
+            .then((res) => {
+                console.log(res.message);
+                localStorage.removeItem('user')
+                localStorage.removeItem('token')
+                clearUserAndAccessToken()
+                isTokenExpired(accessToken!)
+                nav('/sign-in')
 
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+
+
+    const handleSignout = () => {
+        PostQuery(LOGOUT)
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err))
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+        clearUserAndAccessToken()
+        isTokenExpired(accessToken!)
+        nav('/sign-in')
+
+
+    };
     const {
         register,
         handleSubmit,
@@ -50,7 +80,6 @@ export default function DashProfile() {
                 )
                     .then((res) => {
                         localStorage.setItem("user", JSON.stringify(res.data.user));
-                        console.log(res)
                         setUser(res.data.user);
 
                         setImageFileUrl(res.data.user.profilePicture);
@@ -146,9 +175,37 @@ export default function DashProfile() {
                 </Button>
             </form>
             <div className="text-red-500 flex justify-between mt-5">
-                <span className="cursor-pointer">Delete Account</span>
-                <span className="cursor-pointer">Sign Out</span>
+                <span className="cursor-pointer" onClick={() => setShowModal(true)}> Delete Account</span>
+                <span className="cursor-pointer" onClick={() => handleSignout()}>Sign Out</span>
             </div>
+
+
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                popup
+                size='md'
+            >
+                <Modal.Header />
+                <Modal.Body>
+                    <div className='text-center'>
+                        <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+                        <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+                            Are you sure you want to delete your account?
+                        </h3>
+                        <div className='flex justify-center gap-4'>
+                            <Button color='failure' onClick={handleDeleteUser}>
+                                Yes, I'm sure
+                            </Button>
+                            <Button color='gray' onClick={() => setShowModal(false)}>
+                                No, cancel
+                            </Button>
+                        </div>
+                    </div>
+
+                </Modal.Body>
+            </Modal>
+
         </div>
     );
 }

@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {
+  deleteUser,
   demo,
+  logoutUser,
   registerUser,
   tryUser,
   updateUser,
@@ -16,7 +18,10 @@ router
 router
   .route("/update/:userId")
   .patch(verifyJwt, uploadImage().single("profilePictureFile"), updateUser);
+router.route("/delete/:userId").delete(verifyJwt, deleteUser);
+router.route("/logout").post(verifyJwt, logoutUser);
 
+// *************** demo *********************
 router.route("/try").post(uploadImage().single("profilePicture"), tryUser);
 router.route("/demo").post(uploadImage().single("profile"), demo);
 
