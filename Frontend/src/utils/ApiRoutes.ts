@@ -6,3 +6,5 @@ export const TRY = `/api/v1/user/try`;
 export const DELETE_USER = `/api/v1/user/delete/`;
 export const LOGOUT = `/api/v1/user/logout`;
 export const CREATE_POST = "/api/v1/post/create";
+export const FETCH_POST = `/api/v1/post/getposts`;
+export const DELETE_POST = `/api/v1/post/deletepost/`;

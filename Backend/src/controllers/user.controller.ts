@@ -10,7 +10,7 @@ import {
   UpdateUserZodSchema,
 } from "../zod_schema/user.zodschema";
 import { ApiResponse } from "../utils/ApiResponse";
-
+import { SortOrder } from "mongoose";
 const registerUser = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { username, email, password } = req.body;
