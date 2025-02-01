@@ -12,6 +12,10 @@ import Footer from './components/Footer'
 import PrivateRoute from './components/PrivateRoute'
 import CreatePost from '../src/pages/CreatePost'
 import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute'
+import { UPDATE_POST } from './utils/ApiRoutes'
+import UpdatePost from './pages/UpdatePost'
+import PostPage from './pages/PostPage'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
 
@@ -19,6 +23,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+        <ScrollToTop />
         <Header />
         <Routes>
           <Route path='/' element={<Home />} />
@@ -27,6 +32,9 @@ function App() {
           <Route path='/sign-up' element={<SignUp />} />
           <Route element={<OnlyAdminPrivateRoute />}>
             <Route path='/create-post' element={<CreatePost />} />
+            <Route path='/update-post/:postId' element={<UpdatePost />} />
+            <Route path='/post/:postSlug' element={<PostPage />} />
+
           </Route>
 
           <Route element={<PrivateRoute />} >

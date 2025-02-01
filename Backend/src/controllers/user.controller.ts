@@ -142,8 +142,8 @@ const deleteUser = asyncHandler(
       secure: true,
     };
 
-    if (req.user?.id !== req.params.userId) {
-      throw new Error("You are not allowed to delete this user");
+    if (req.user?.isAdmin === false && req.user?.id !== req.params.userId) {
+      throw new ApiError(403, "You are not allowed to delete this user");
     }
     try {
       await User.findByIdAndDelete(req.params.userId);
@@ -160,6 +160,57 @@ const deleteUser = asyncHandler(
   }
 );
 
+const getUsers = asyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    console.log(req.user);
+    if (req.user?.isAdmin === false) {
+      throw new ApiError(403, "You are not allowed to see all users");
+    }
+    const startIndex = parseInt(req.query.startIndex as string) || 0;
+    const limit = parseInt(req.query.limit as string) || 9;
+    const sortDirection: SortOrder = req.query.order === "asc" ? 1 : -1;
+
+    const users = await User.find()
+      .sort({ createdAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit)
+      .select("-password");
+
+    const totalUsers = await User.countDocuments();
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+    const lastMonthUsers = await User.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
+    return res.status(200).json(
+      new ApiResponse(200, "Totalusers", {
+        users,
+        totalUsers,
+        lastMonthUsers,
+      })
+    );
+  }
+);
+
+const getUser = asyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const user = await User.findById(req.params.userId).select("-password");
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+    res.status(200).json(
+      new ApiResponse(200, "User found", {
+        user,
+      })
+    );
+  }
+);
+
 const tryUser = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { username } = req.body;
@@ -172,4 +223,13 @@ const demo = asyncHandler(async (req: Request, res: Response): Promise<any> => {
   return res.status(200).json(new ApiResponse(200, "User logged Out", {}));
 });
 
-export { demo, registerUser, updateUser, tryUser, deleteUser, logoutUser };
+export {
+  demo,
+  registerUser,
+  updateUser,
+  tryUser,
+  deleteUser,
+  logoutUser,
+  getUsers,
+  getUser,
+};

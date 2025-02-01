@@ -3,6 +3,7 @@ import {
   createPost,
   deletePost,
   getPosts,
+  updatePost,
 } from "../controllers/post.controller";
 import { uploadImage } from "../middleware/file.middleware";
 import { verifyJwt } from "../middleware/auth.middleware";
@@ -15,4 +16,8 @@ router
 
 router.route("/getposts").get(getPosts);
 router.route("/deletepost/:postId/:userId").delete(verifyJwt, deletePost);
+router
+  .route("/updatepost/:postId/:userId")
+  .patch(verifyJwt, uploadImage().single("postImageFile"), updatePost);
+
 export { router };

@@ -46,7 +46,6 @@ export default function DashPosts() {
     return await FetchQuery(route);
   };
   const queryClient = useQueryClient()
-  // Use useInfiniteQuery for fetching paginated data
   const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useInfiniteQuery(
     ['posts', user?._id],
     FetchPostHandler,

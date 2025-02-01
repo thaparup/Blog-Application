@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ApiResponse } from "../utils/ApiResponse";
 import { uploadOnCloudinary } from "../utils/cloudinary";
-import { CreatePostZodSchema } from "../zod_schema/post.schema";
+import {
+  CreatePostZodSchema,
+  UpdatePostZodSchema,
+} from "../zod_schema/post.schema";
 import { Post } from "../models/post.model";
 import { DEFAULT_POST_IMAGE } from "../constants";
 import { SortOrder } from "mongoose";
@@ -68,6 +71,63 @@ const createPost = asyncHandler(
   }
 );
 
+const updatePost = asyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    if (req.user?.isAdmin === false || req.user?.id !== req.params.userId) {
+      throw new ApiError(403, "You are not allowed to update this post");
+    }
+    if (req.file) {
+      const localPath = req.file.path;
+
+      try {
+        const postImageUrl = await uploadOnCloudinary(localPath);
+
+        req.body.imageUrl = postImageUrl.secure_url || DEFAULT_POST_IMAGE;
+      } catch (error) {
+        console.error("Error while uploading image to Cloudinary:", error);
+      }
+    }
+    const parseRequestBody = UpdatePostZodSchema.safeParse(req.body);
+
+    if (!parseRequestBody.success) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: parseRequestBody.error.errors.map((item) => item.message),
+      });
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.postId,
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          category: req.body.category,
+          imageUrl: req.body.imageUrl,
+        },
+      },
+      { new: true }
+    );
+    try {
+      const updatedPost = await Post.findByIdAndUpdate(
+        req.params.postId,
+        {
+          $set: {
+            title: req.body.title,
+            content: req.body.content,
+            category: req.body.category,
+            imageUrl: req.body.imageUrl,
+          },
+        },
+        { new: true }
+      );
+      res
+        .status(200)
+        .json(new ApiResponse(200, "Post updated", { post: updatedPost }));
+    } catch (error) {}
+  }
+);
+
 const getPosts = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const startIndex = parseInt(req.query.startIndex as string) || 0;
@@ -77,7 +137,7 @@ const getPosts = asyncHandler(
     const posts = await Post.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
-      ...(req.query.slug && { category: req.query.slug }),
+      ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.postId && { _id: req.query.postId }),
       ...(req.query.searchTerm && {
         $or: [
@@ -128,4 +188,4 @@ const deletePost = asyncHandler(
     }
   }
 );
-export { createPost, getPosts, deletePost };
+export { createPost, getPosts, deletePost, updatePost };

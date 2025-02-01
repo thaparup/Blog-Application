@@ -13,6 +13,7 @@ app.use(cookieParser());
 import { router as userRouter } from "./routes/user.routes";
 import { router as authRouter } from "./routes/auth.routes";
 import { router as postRouter } from "./routes/post.routes";
+import { router as commentRouter } from "./routes/comment.routes";
 
 // user
 app.use("/api/v1/user", userRouter);
@@ -22,5 +23,8 @@ app.use("/api/v1/auth", authRouter);
 
 //post
 app.use("/api/v1/post", postRouter);
+
+// comment
+app.use("/api/ v1/comment", commentRouter);
 
 export { app };
