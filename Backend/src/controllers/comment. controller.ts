@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { Comment } from "../models/comment.model";
 import { ApiError } from "../utils/Apierror";
 import { ApiResponse } from "../utils/ApiResponse";
+import { SortOrder } from "mongoose";
 
 const createComment = asyncHandler(
   async (req: Request, res: Response): Promise<any> => {
@@ -57,5 +58,42 @@ const likeDislikeComment = asyncHandler(
   }
 );
 
-// Controller to handle
-export { createComment, getPostComments, likeDislikeComment };
+const getComments = asyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    if (req.user?.isAdmin === false)
+      throw new ApiError(403, "You are not allowed to get all comments");
+
+    const startIndex = parseInt(req.query.startIndex as string) || 0;
+    const limit = parseInt(req.query.limit as string) || 9;
+    const sortDirection: SortOrder = req.query.order === "asc" ? 1 : -1;
+
+    const comments = await Comment.find()
+      .sort({ updatedAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+
+    const totalComments = await Comment.countDocuments();
+
+    const now = new Date();
+
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const lastMonthComments = await Comment.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
+    return res.status(200).json(
+      new ApiResponse(200, "Posts", {
+        comments,
+        totalComments,
+        lastMonthComments,
+      })
+    );
+  }
+);
+
+export { createComment, getPostComments, likeDislikeComment, getComments };

@@ -44,30 +44,6 @@ export default function CommentSection({ postId }) {
     const queryClient = useQueryClient();
 
 
-    // const updateLikeAsyncHandler = async (commentId: string) => PatchQuery(`${LIKE_UNLIKE_COMMENT}/${commentId}`, register)
-    // const updateLike = useMutation({
-    //     mutationFn: () => updateLikeAsyncHandler(commentId),
-    //     onSuccess: () => {
-    //         queryClient.setQueryData(['comments', commentId], (oldData: any) => {
-    //             return oldData.data.map((comment: any) => {
-    //                 if (comment._id === commentId) {
-    //                     return {
-
-    //                     }
-    //                 }
-    //             })
-    //         })
-
-    //     }
-    // })
-    // const handleLike = (commentId: string) => {
-
-    //     if (!user) {
-    //         navigate('/sign-in');
-    //         return;
-    //     }
-    //   updateLike.mutate({})   
-    // }
 
 
     const updateLikeAsyncHandler = async (commentId: string) => {
@@ -77,15 +53,15 @@ export default function CommentSection({ postId }) {
 
     const updateLike = useMutation({
         mutationFn: (commentId: string) => updateLikeAsyncHandler(commentId),
-        onSuccess: () => {
-            queryClient.setQueryData(['comments', commentId], (oldData: any) => {
+        onSuccess: (commentId) => {
+            queryClient.setQueryData(['comments', postId], (oldData: any) => {
                 return oldData.data.map((comment: any) => {
                     if (comment._id === commentId) {
-                        // You can update the comment data here if needed
-                        // For example, toggle the like status or update the like count
+
                         return {
-                            ...comment, // spread to preserve other comment properties
-                            liked: !comment.liked, // toggle the 'liked' status
+                            ...comment,
+                            liked: !comment.liked,
+
                         };
                     }
                     return comment;

@@ -21,3 +21,4 @@ export const GET_USER = `/api/v1/user/:userId/`;
 export const CREATE_COMMENT = `/api/v1/comment/create`;
 export const GET_POST_COMMENTS = `/api/v1/comment/getcomments/`;
 export const LIKE_UNLIKE_COMMENT = `/api/v1/comment/likecomment/`;
+export const GET_COMMENTS = `/api/v1/comment/getcomments`;
